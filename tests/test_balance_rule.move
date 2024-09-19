@@ -47,9 +47,9 @@ module bucket_point_phase1::test_balance_rule {
     fun test_sbuck_point() {
         let (mut scenario, mut clock) = setup();
         let s = &mut scenario;
-        let (a, staker, _) = people();
+        let (updater, staker, _) = people();
 
-        s.next_tx(a);
+        s.next_tx(updater);
         {
             let mut config = s.take_shared<BucketPointConfig>();
             let cap = s.take_from_sender<BucketPointCap>();
@@ -60,10 +60,10 @@ module bucket_point_phase1::test_balance_rule {
             test::return_shared(config);
         };
 
-        s.next_tx(a);
+        s.next_tx(updater);
         {
             let locker = test::take_shared<AssetLocker<Balance<SBUCK>, BucketPointPhase1>>(s);
-            assert!(asset_locker::has_assets(&locker, a) == false, 404);
+            assert!(asset_locker::has_assets(&locker, updater) == false, 404);
             test::return_shared(locker);
 
         };
@@ -92,7 +92,7 @@ module bucket_point_phase1::test_balance_rule {
         };
 
         // UPDATER update the point
-        s.next_tx(a);
+        s.next_tx(updater);
         {
             let mut dashboard = test::take_shared<PointDashBoard<BucketPointPhase1>>(s);
             let cap = test::take_from_sender<AdmincCap>(s);
@@ -139,7 +139,7 @@ module bucket_point_phase1::test_balance_rule {
             test::return_shared(config);
         };
 
-        s.next_tx(a);{
+        s.next_tx(updater);{
             let mut dashboard = test::take_shared<PointDashBoard<BucketPointPhase1>>(s);
             let cap = test::take_from_sender<AdmincCap>(s);
             let req = test::take_from_sender<UnstakePointRequest<BucketPointPhase1>>(s);
@@ -186,7 +186,7 @@ module bucket_point_phase1::test_balance_rule {
             test::return_shared(config);
         };
 
-        s.next_tx(a);{
+        s.next_tx(updater);{
             let mut dashboard = test::take_shared<PointDashBoard<BucketPointPhase1>>(s);
             let cap = test::take_from_sender<AdmincCap>(s);
             let req = test::take_from_sender<UnstakePointRequest<BucketPointPhase1>>(s);
@@ -216,18 +216,18 @@ module bucket_point_phase1::test_balance_rule {
     }
 
     fun setup(): (Scenario, Clock) {
-        let (a, _, _) = people();
-        let mut scenario = test::begin(a);
+        let (updater, _, _) = people();
+        let mut scenario = test::begin(updater);
         let s = &mut scenario;
         let mut clock = clock::create_for_testing(ctx(s));
 
         profile::init_for_testing(ctx(s));
 
-        s.next_tx(a);
+        s.next_tx(updater);
         config::init_for_testing(s.ctx());
 
         // register_point_module
-        s.next_tx(a);
+        s.next_tx(updater);
         {
             let mut reg = test::take_shared<ProfileRegistry>(s);
             let cap = test::take_from_sender<AdmincCap>(s);

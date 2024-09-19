@@ -22,7 +22,7 @@ module bucket_point_phase1::balance_rule {
 
     // Admin Funs
 
-    public fun create_balance_locker<T>(
+    public fun create_locker<T>(
         config: &mut BucketPointConfig,
         _cap: &BucketPointCap,
         weight_percent: u64,

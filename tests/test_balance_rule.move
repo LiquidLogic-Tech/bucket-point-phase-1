@@ -53,7 +53,7 @@ module bucket_point_phase1::test_balance_rule {
         {
             let mut config = s.take_shared<BucketPointConfig>();
             let cap = s.take_from_sender<BucketPointCap>();
-            balance_rule::create_balance_locker<SBUCK>(
+            balance_rule::create_locker<SBUCK>(
                 &mut config, &cap, 40, string(b"ST_SBUCK"), s.ctx(),
             );
             s.return_to_sender(cap);

@@ -1,6 +1,8 @@
 /// ST_SBUCK: 0xd01d27939064d79e4ae1179cd11cfeeff23943f32b1a842ea1a1e15a0045d77d::st_sbuck::ST_SBUCK
 module bucket_point_phase1::balance_rule {
     
+    // Dependencies
+
     use std::ascii::{String};
     use sui::balance::{Balance};
     use sui::clock::{Clock};
@@ -13,9 +15,12 @@ module bucket_point_phase1::balance_rule {
         Self, BucketPointConfig, BucketPointCap, BucketPointPhase1
     };
     
+    // Errors
 
-    const ERR_INSUFFICIENT_TO_WITHDRAW: u64 = 101;
-    fun err_insufficient_to_withdraw() { abort ERR_INSUFFICIENT_TO_WITHDRAW }
+    const EInsufficientToWithdraw: u64 = 101;
+    fun err_insufficient_to_withdraw() { abort EInsufficientToWithdraw }
+
+    // Admin Funs
 
     public fun create_balance_locker<T>(
         config: &mut BucketPointConfig,
@@ -29,6 +34,8 @@ module bucket_point_phase1::balance_rule {
         );
         config.insert(locker_id, weight_percent, action_name);
     }
+
+    // Public Funs
 
     public fun deposit<T>(
         config: &BucketPointConfig,

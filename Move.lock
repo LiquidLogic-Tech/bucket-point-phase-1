@@ -2,11 +2,20 @@
 
 [move]
 version = 2
-manifest_digest = "9FEEE890AB0D407A0DEC867D931FAB80972E097B51ED76EC8F2427DA6862BB29"
-deps_digest = "3C4103934B1E040BB6B23F1D610B4EF9F2F1166A50A104EADCF77467C004C600"
+manifest_digest = "7BE7E14BCAFA4E511A7A38E0ADD0DE3385FF966C8D54EC5A425B423A529A2DE1"
+deps_digest = "060AD7E57DFB13104F21BE5F5C3759D03F0553FC3229247D9A7A6B45F50D03A3"
 dependencies = [
+  { name = "BucketFountain" },
   { name = "LiquidlinkLocker" },
   { name = "StrapFountain" },
+]
+
+[[move.package]]
+name = "BucketFountain"
+source = { git = "../../sui-playground/fountain", rev = "mainnet", subdir = "" }
+
+dependencies = [
+  { name = "Sui" },
 ]
 
 [[move.package]]

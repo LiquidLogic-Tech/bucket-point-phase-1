@@ -7,6 +7,7 @@ edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
 [dependencies]
 LiquidlinkLocker = { git = "../liquidlink-contract-periphery", subdir = "locker", rev = "main" }
 StrapFountain = { git = "../../sui-playground/strap-fountain", rev = "main" }
+BucketFountain = { git = "../../sui-playground/fountain", rev = "mainnet" }
 
 # For remote import, use the `{ git = "...", subdir = "...", rev = "..." }`.
 # Revision can be a branch, a tag, and a commit hash.

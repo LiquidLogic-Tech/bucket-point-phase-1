@@ -26,6 +26,7 @@ module bucket_point_phase1::proof_rule {
         action_name: String,
         ctx: &mut TxContext,
     ) {
+        config.assert_valid_config_version();
         let locker_id = asset_locker::create<StakeProof<T, SUI>, BPP1>(
             &config::witness(), ctx,
         );
@@ -41,6 +42,7 @@ module bucket_point_phase1::proof_rule {
         proof: StakeProof<T, SUI>,
         ctx: &mut TxContext,
     ) {
+        config.assert_valid_config_version();
         let (weight, action) = config.get_locker_params(locker);
         let amount = proof.get_proof_stake_amount();
         let point = float::from(amount).mul(weight).floor() as u256;
@@ -63,6 +65,7 @@ module bucket_point_phase1::proof_rule {
         index: u64,
         ctx: &mut TxContext,
     ): StakeProof<T, SUI> {
+        config.assert_valid_config_version();
         let w = &mut config::witness();
         let owner = ctx.sender();
         let proofs = locker.assets_of(w, owner);

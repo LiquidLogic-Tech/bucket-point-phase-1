@@ -27,6 +27,7 @@ module bucket_point_phase1::lst_proof_rule {
         action_name: String,
         ctx: &mut TxContext,
     ) {
+        config.assert_valid_config_version();
         let locker_id = asset_locker::create<StakeProof<T, SUI>, BPP1>(
             &config::witness(), ctx,
         );
@@ -43,6 +44,7 @@ module bucket_point_phase1::lst_proof_rule {
         proof: StakeProof<T, SUI>,
         ctx: &mut TxContext,
     ) {
+        config.assert_valid_config_version();
         let (weight, action) = config.get_locker_params(locker);
         let debt = fountain::get_raw_debt<T>(protocol, proof.strap_address());
         let point = float::from(debt).mul(weight).floor() as u256;
@@ -67,6 +69,7 @@ module bucket_point_phase1::lst_proof_rule {
         index: u64,
         ctx: &mut TxContext,
     ): StakeProof<T, SUI> {
+        config.assert_valid_config_version();
         let w = &config::witness();
         let owner = ctx.sender();
         let proof = borrow_asset(w, locker, owner, index);
@@ -91,6 +94,7 @@ module bucket_point_phase1::lst_proof_rule {
         owner: address,
         ctx: &mut TxContext,
     ) {
+        config.assert_valid_config_version();
         let w = &config::witness();
         let mut is_not_empty = !locker.assets_of(w, owner).is_empty();
         while (is_not_empty) {

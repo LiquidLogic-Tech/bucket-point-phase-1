@@ -1,11 +1,24 @@
 module bucket_point_phase1::config {
     
+    // Dependencies
+
     use std::ascii::{String};
     use sui::vec_map::{Self, VecMap};
+    use sui::vec_set::{Self, VecSet};
     use flask::float::{Self, Float};
     use liquidlink_locker::asset_locker::{AssetLocker};
 
+    // Constants
+
+    const PACKAGE_VERSION: u64 = 0;
     const ONE_HOUR: u64 = 3600_000;
+
+    // Errors
+    
+    const EInvalidPackageVersion: u64 = 0;
+    fun err_invalid_package_version() { abort EInvalidPackageVersion }
+
+    // Objects
 
     public struct BucketPointPhase1 has drop {}
 
@@ -13,6 +26,7 @@ module bucket_point_phase1::config {
         id: UID,
         weights: VecMap<ID, Float>,
         actions: VecMap<ID, String>,
+        valid_versions: VecSet<u64>,
     }
 
     public struct BucketPointCap has key { id: UID }
@@ -41,6 +55,8 @@ module bucket_point_phase1::config {
         )
     }
 
+    public fun package_version(): u64 { PACKAGE_VERSION }
+
     public fun duration(): u64 { ONE_HOUR }
 
     public(package) fun witness(): BucketPointPhase1 {
@@ -55,6 +71,13 @@ module bucket_point_phase1::config {
     ) {
         config.weights.insert(id, float::from_percent_u64(weight_percent));
         config.actions.insert(id, action_name);
+    }
+
+    public(package) fun assert_valid_config_version(
+        config: &BucketPointConfig,
+    ) {
+        if (config.valid_versions.contains(package_version()))
+            err_invalid_package_version();
     }
 
     #[test_only]

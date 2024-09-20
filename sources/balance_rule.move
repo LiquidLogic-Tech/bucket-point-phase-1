@@ -29,6 +29,7 @@ module bucket_point_phase1::balance_rule {
         action_name: String,
         ctx: &mut TxContext,
     ) {
+        config.assert_valid_config_version();
         let locker_id = balance_locker::create<T, BucketPointPhase1>(
             &config::witness(), ctx,
         );
@@ -44,6 +45,7 @@ module bucket_point_phase1::balance_rule {
         collateral: Balance<T>,
         ctx: &mut TxContext,
     ) {
+        config.assert_valid_config_version();
         let (weight, action) = config.get_locker_params(locker);
         let point = float::from(collateral.value()).mul(weight).floor() as u256;
         balance_locker::lock<T, BucketPointPhase1>(
@@ -66,6 +68,7 @@ module bucket_point_phase1::balance_rule {
         withdrawal_amt: u64,
         ctx: &mut TxContext
     ): Balance<T> {
+        config.assert_valid_config_version();
         let sender = ctx.sender();
         let owner_balance = balance_locker::owner_locked_balance(locker, sender);
         if (withdrawal_amt > owner_balance) err_insufficient_to_withdraw();

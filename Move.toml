@@ -3,10 +3,12 @@ name = "BucketPointPhase1"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
+# published-at = "0x6009b99da10a8ec5e5f108544c393191792a2970d5b710331803f31d53d4cb52"
+published-at = "0xadad56b1af73a29dbfed997ea13e4a6044eae29fd029fbd524fd121a13adca42"
 
 [dependencies]
 LiquidlinkLocker = { git = "../liquidlink-contract-periphery", subdir = "locker", rev = "main" }
-StrapFountain = { git = "../../sui-playground/strap-fountain", rev = "main" }
+StrapFountain = { git = "../../sui-playground/strap-fountain", rev = "mainnet" }
 BucketFountain = { git = "../../sui-playground/fountain", rev = "mainnet" }
 
 # For remote import, use the `{ git = "...", subdir = "...", rev = "..." }`.
@@ -22,6 +24,7 @@ BucketFountain = { git = "../../sui-playground/fountain", rev = "mainnet" }
 
 [addresses]
 bucket_point_phase1 = "0x0"
+# bucket_point_phase1 = "0x6009b99da10a8ec5e5f108544c393191792a2970d5b710331803f31d53d4cb52"
 
 # Named addresses will be accessible in Move as `@name`. They're also exported:
 # for example, `std = "0x1"` is exported by the Standard Library.

@@ -2,7 +2,7 @@
 
 [move]
 version = 2
-manifest_digest = "7BE7E14BCAFA4E511A7A38E0ADD0DE3385FF966C8D54EC5A425B423A529A2DE1"
+manifest_digest = "13D31869F6878B6B7B3ED3D681B997A229AFA25FF2741BD64B9DCCEB951E33DD"
 deps_digest = "060AD7E57DFB13104F21BE5F5C3759D03F0553FC3229247D9A7A6B45F50D03A3"
 dependencies = [
   { name = "BucketFountain" },
@@ -20,7 +20,7 @@ dependencies = [
 
 [[move.package]]
 name = "BucketFramework"
-source = { git = "..", rev = "main", subdir = "framework" }
+source = { git = "..", rev = "mainnet", subdir = "framework" }
 
 dependencies = [
   { name = "Sui" },
@@ -28,15 +28,18 @@ dependencies = [
 
 [[move.package]]
 name = "BucketOracle"
-source = { git = "https://github.com/Bucket-Protocol/oracle.git", rev = "test-only", subdir = "" }
+source = { git = "https://github.com/Bucket-Protocol/oracle.git", rev = "mainnet", subdir = "" }
 
 dependencies = [
+  { name = "Pyth" },
   { name = "Sui" },
+  { name = "SupraOracle" },
+  { name = "SwitchboardStdLib" },
 ]
 
 [[move.package]]
 name = "BucketProtocol"
-source = { git = "../v1-core", rev = "main", subdir = "protocol/" }
+source = { git = "../v1-core", rev = "mainnet", subdir = "protocol/" }
 
 dependencies = [
   { name = "BucketFramework" },
@@ -47,7 +50,7 @@ dependencies = [
 
 [[move.package]]
 name = "Flask"
-source = { git = "..", rev = "main", subdir = "flask" }
+source = { git = "..", rev = "mainnet", subdir = "flask" }
 
 dependencies = [
   { name = "Sui" },
@@ -75,8 +78,17 @@ name = "MoveStdlib"
 source = { git = "https://github.com/MystenLabs/sui.git", rev = "framework/mainnet", subdir = "crates/sui-framework/packages/move-stdlib" }
 
 [[move.package]]
+name = "Pyth"
+source = { git = "https://github.com/Bucket-Protocol/oracle.git", rev = "mainnet", subdir = "partners/pyth" }
+
+dependencies = [
+  { name = "Sui" },
+  { name = "Wormhole" },
+]
+
+[[move.package]]
 name = "StrapFountain"
-source = { git = "../../sui-playground/strap-fountain", rev = "main", subdir = "" }
+source = { git = "../../sui-playground/strap-fountain", rev = "mainnet", subdir = "" }
 
 dependencies = [
   { name = "BucketProtocol" },
@@ -91,7 +103,40 @@ dependencies = [
   { name = "MoveStdlib" },
 ]
 
+[[move.package]]
+name = "SupraOracle"
+source = { git = "https://github.com/Bucket-Protocol/oracle.git", rev = "mainnet", subdir = "partners/supra" }
+
+dependencies = [
+  { name = "Sui" },
+]
+
+[[move.package]]
+name = "SwitchboardStdLib"
+source = { git = "https://github.com/Bucket-Protocol/oracle.git", rev = "mainnet", subdir = "partners/switchboard" }
+
+dependencies = [
+  { name = "MoveStdlib" },
+  { name = "Sui" },
+]
+
+[[move.package]]
+name = "Wormhole"
+source = { git = "https://github.com/Bucket-Protocol/oracle.git", rev = "mainnet", subdir = "partners/pyth/wormhole" }
+
+dependencies = [
+  { name = "Sui" },
+]
+
 [move.toolchain-version]
-compiler-version = "1.32.0"
+compiler-version = "1.33.1"
 edition = "2024.beta"
 flavor = "sui"
+
+[env]
+
+[env.mainnet]
+chain-id = "35834a8a"
+original-published-id = "0x6009b99da10a8ec5e5f108544c393191792a2970d5b710331803f31d53d4cb52"
+latest-published-id = "0xadad56b1af73a29dbfed997ea13e4a6044eae29fd029fbd524fd121a13adca42"
+published-version = "2"

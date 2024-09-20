@@ -54,7 +54,7 @@ module bucket_point_phase1::test_balance_rule {
             let mut config = s.take_shared<BucketPointConfig>();
             let cap = s.take_from_sender<BucketPointCap>();
             balance_rule::create_locker<SBUCK>(
-                &mut config, &cap, 40, string(b"ST_SBUCK"), s.ctx(),
+                &mut config, &cap, 110, string(b"ST_SBUCK"), s.ctx(),
             );
             s.return_to_sender(cap);
             test::return_shared(config);
@@ -112,7 +112,7 @@ module bucket_point_phase1::test_balance_rule {
             let dashboard = test::take_shared<PointDashBoard<BucketPointPhase1>>(s);
                 
             let info = dashboard.get_user_info(staker);
-            acc_points = 9_600_000_000_000;
+            acc_points = 26_400_000_000_000;
             assert!(dashboard.get_user_info_points(staker, &clock) == acc_points, 404);
             assert!(dashboard.get_user_info_point_by_action(staker, string(b"ST_SBUCK"), &clock) == acc_points, 404);
 
@@ -157,7 +157,8 @@ module bucket_point_phase1::test_balance_rule {
             let dashboard = test::take_shared<PointDashBoard<BucketPointPhase1>>(s);
                 
             let info = dashboard.get_user_info(staker);
-            acc_points = acc_points + 7 * 4_800_000_000_000;
+            std::debug::print(&dashboard.get_user_info_points(staker, &clock));
+            acc_points = acc_points + 7 * 13_200_000_000_000;
             assert!(dashboard.get_user_info_points(staker, &clock) == acc_points, 404);
             assert!(dashboard.get_user_info_point_by_action(staker, string(b"ST_SBUCK"), &clock) == acc_points, 404);
             assert!(dashboard.get_user_info_point_by_action(staker, string(b"foo"), &clock) == 0, 404);

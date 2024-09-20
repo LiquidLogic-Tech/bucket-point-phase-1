@@ -65,6 +65,18 @@ module bucket_point_phase1::config {
         config.valid_versions.remove(&package_version);
     }
 
+    public fun update_locker_weight(
+        config: &mut BucketPointConfig,
+        _cap: &BucketPointCap,
+        locker_id: ID,
+        weight_percent: u64,
+    ) {
+        config.weights.remove(&locker_id);
+        config.weights.insert(
+            locker_id, float::from_percent_u64(weight_percent),
+        );
+    }
+
     // Getter Funs
 
     public fun get_locker_params<T: store, P: drop>(
@@ -81,6 +93,8 @@ module bucket_point_phase1::config {
     public fun package_version(): u64 { PACKAGE_VERSION }
 
     public fun duration(): u64 { ONE_HOUR }
+
+    // Friend Funs
 
     public(package) fun witness(): BucketPointPhase1 {
         BucketPointPhase1 {}
@@ -99,9 +113,11 @@ module bucket_point_phase1::config {
     public(package) fun assert_valid_config_version(
         config: &BucketPointConfig,
     ) {
-        if (config.valid_versions.contains(&package_version()))
+        if (!config.valid_versions.contains(&package_version()))
             err_invalid_package_version();
     }
+
+    // Test-only Funs
 
     #[test_only]
     public fun init_for_testing(ctx: &mut TxContext) {

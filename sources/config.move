@@ -31,11 +31,14 @@ module bucket_point_phase1::config {
 
     public struct BucketPointCap has key { id: UID }
 
+    // Constructor
+
     fun init(ctx: &mut TxContext) {
         let config = BucketPointConfig {
             id: object::new(ctx),
             weights: vec_map::empty(),
             actions: vec_map::empty(),
+            valid_versions: vec_set::singleton(package_version()),
         };
         transfer::share_object(config);
         let cap = BucketPointCap {
@@ -43,6 +46,26 @@ module bucket_point_phase1::config {
         };
         transfer::transfer(cap, ctx.sender());
     }
+
+    // Admin Funs
+
+    public fun add_version(
+        config: &mut BucketPointConfig,
+        _cap: &BucketPointCap,
+        package_version: u64,
+    ) {
+        config.valid_versions.insert(package_version);
+    }
+
+    public fun remove_version(
+        config: &mut BucketPointConfig,
+        _cap: &BucketPointCap,
+        package_version: u64,
+    ) {
+        config.valid_versions.remove(&package_version);
+    }
+
+    // Getter Funs
 
     public fun get_locker_params<T: store, P: drop>(
         config: &BucketPointConfig,
@@ -76,7 +99,7 @@ module bucket_point_phase1::config {
     public(package) fun assert_valid_config_version(
         config: &BucketPointConfig,
     ) {
-        if (config.valid_versions.contains(package_version()))
+        if (config.valid_versions.contains(&package_version()))
             err_invalid_package_version();
     }
 

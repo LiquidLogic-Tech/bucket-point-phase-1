@@ -4,13 +4,14 @@ module bucket_point_phase1::proof_rule {
 
     use std::ascii::{String};
     use sui::sui::SUI;
+    use sui::coin::{Self, Coin};
     use sui::clock::{Clock};
     use liquidlink_locker::asset_locker::{Self, AssetLocker};
     use flask::float;
     use bucket_point_phase1::config::{
         Self, BucketPointConfig, BucketPointCap, BucketPointPhase1 as BPP1
     };
-    use bucket_fountain::fountain_core::{StakeProof};
+    use bucket_fountain::fountain_core::{Self, Fountain, StakeProof};
 
     // Errors
 
@@ -83,5 +84,21 @@ module bucket_point_phase1::proof_rule {
             clock,
             ctx,
         )    
+    }
+
+    public fun claim<T>(
+        locker: &mut AssetLocker<StakeProof<T, SUI>, BPP1>,
+        fountain: &mut Fountain<T, SUI>,
+        clock: &Clock,
+        index: u64,
+        ctx: &mut TxContext,
+    ): Coin<SUI> {
+        let proofs = locker.assets_of_mut(
+            &mut config::witness(), ctx.sender(),
+        );
+        if (index >= proofs.length())
+            err_index_out_of_range();
+        let reward = fountain_core::claim(clock, fountain, &mut proofs[index]);
+        coin::from_balance(reward, ctx)
     }
 }

@@ -4,6 +4,7 @@ module bucket_point_phase1::lst_proof_rule {
 
     use std::ascii::{String};
     use sui::sui::SUI;
+    use sui::coin::{Coin};
     use sui::clock::{Clock};
     use liquidlink_locker::asset_locker::{Self, AssetLocker};
     use flask::float;
@@ -112,6 +113,21 @@ module bucket_point_phase1::lst_proof_rule {
             };
             is_not_empty = !locker.assets_of(w, owner).is_empty();
         };
+    }
+
+    public fun claim<T>(
+        locker: &mut AssetLocker<StakeProof<T, SUI>, BPP1>,
+        fountain: &mut Fountain<T, SUI>,
+        clock: &Clock,
+        index: u64,
+        ctx: &mut TxContext,
+    ): Coin<SUI> {
+        let proofs = locker.assets_of_mut(
+            &mut config::witness(), ctx.sender(),
+        );
+        if (index >= proofs.length())
+            err_index_out_of_range();
+        fountain.claim(clock, &mut proofs[index], ctx)
     }
 
     // Internal Funs

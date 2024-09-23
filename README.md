@@ -3,7 +3,7 @@ The Bucket Protocol Points (phase 1)
 
 ### Package ID
 ```
-0xadad56b1af73a29dbfed997ea13e4a6044eae29fd029fbd524fd121a13adca42
+0x562cb692158e1d2ab82cb901be324dc6234f197bab6bfc1ba38114ae0aebc189
 ```
 
 ### Shared Objects

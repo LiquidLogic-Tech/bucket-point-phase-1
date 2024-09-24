@@ -46,15 +46,17 @@ module bucket_point_phase1::lst_proof_rule {
         ctx: &mut TxContext,
     ) {
         config.assert_valid_config_version();
+        let owner = ctx.sender();
         let (weight, action) = config.get_locker_params(locker);
+        let current_value = owner_value(locker, protocol, owner);
         let debt = fountain::get_raw_debt<T>(protocol, proof.strap_address());
-        let point = float::from(debt).mul(weight).floor() as u256;
+        let factor = float::from(current_value + debt).mul(weight).floor() as u256;
         locker.lock(
             &mut config::witness(),
-            ctx.sender(),
+            owner,
             proof,
             action,
-            point,
+            factor,
             config::duration(),
             clock,
             ctx,
@@ -83,7 +85,7 @@ module bucket_point_phase1::lst_proof_rule {
             );
             debt_amount
         };
-        unlock_internal(config, locker, clock, index, owner, debt_amount, ctx)
+        unlock_internal(config, locker, protocol, clock, index, owner, debt_amount, ctx)
     }
     
     public fun liquidate<T>(
@@ -100,14 +102,13 @@ module bucket_point_phase1::lst_proof_rule {
         let mut is_not_empty = !locker.assets_of(w, owner).is_empty();
         while (is_not_empty) {
             let proof = &locker.assets_of(w, owner)[0];
-            // let proof = &proofs[0];
             let strap_address = proof.strap_address();
             let (is_liquidated, _, debt_amount) = fountain.liquidate_with_info<T, SUI>(
                 protocol, clock, strap_address, ctx,
             );
             if (is_liquidated) {
                 let proof = unlock_internal(
-                    config, locker, clock, 0, owner, debt_amount, ctx,
+                    config, locker, protocol, clock, 0, owner, debt_amount, ctx,
                 );
                 transfer::public_transfer(proof, owner);
             };
@@ -130,6 +131,20 @@ module bucket_point_phase1::lst_proof_rule {
         fountain.claim(clock, &mut proofs[index], ctx)
     }
 
+    public fun owner_value<T>(
+        locker: &AssetLocker<StakeProof<T, SUI>, BPP1>,
+        protocol: &BucketProtocol,
+        owner: address,
+    ): u64 {
+        let mut owner_value = 0;
+        locker
+            .assets_of(&config::witness(), owner)
+            .do_ref!(
+                |proof| owner_value = owner_value + fountain::get_raw_debt<T>(protocol, proof.strap_address())
+            );
+        owner_value
+    }
+
     // Internal Funs
 
     fun borrow_asset<T>(
@@ -146,6 +161,7 @@ module bucket_point_phase1::lst_proof_rule {
     fun unlock_internal<T>(
         config: &BucketPointConfig,
         locker: &mut AssetLocker<StakeProof<T, SUI>, BPP1>,
+        protocol: &BucketProtocol,
         clock: &Clock,
         index: u64,
         owner: address,
@@ -156,13 +172,14 @@ module bucket_point_phase1::lst_proof_rule {
         let proofs = locker.assets_of(w, owner);
         if (index >= proofs.length()) err_index_out_of_range();
         let (weight, action) = config.get_locker_params(locker);
-        let point = float::from(debt_amount).mul(weight).floor() as u256;
+        let current_value = owner_value(locker, protocol, owner);
+        let factor = float::from(current_value - debt_amount).mul(weight).floor() as u256;
         locker.unlock(
             w,
             owner,
             index,
             action,
-            point,
+            factor,
             config::duration(),
             clock,
             ctx,

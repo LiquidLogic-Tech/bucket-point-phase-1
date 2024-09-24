@@ -10,7 +10,7 @@ module bucket_point_phase1::config {
 
     // Constants
 
-    const PACKAGE_VERSION: u64 = 0;
+    const PACKAGE_VERSION: u64 = 1;
     const ONE_HOUR: u64 = 3600_000;
 
     // Errors

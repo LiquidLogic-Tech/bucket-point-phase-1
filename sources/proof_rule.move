@@ -110,9 +110,11 @@ module bucket_point_phase1::proof_rule {
         owner: address,
     ): u64 {
         let mut total_value = 0;
-        locker
-            .assets_of(&config::witness(), owner)
-            .do_ref!(|proof| total_value = total_value + proof.get_proof_stake_amount());
+        if (locker.has_assets(owner)) {
+            locker
+                .assets_of(&config::witness(), owner)
+                .do_ref!(|proof| total_value = total_value + proof.get_proof_stake_amount());
+        };
         total_value
     }
 }

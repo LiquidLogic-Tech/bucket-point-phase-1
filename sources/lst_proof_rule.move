@@ -137,11 +137,13 @@ module bucket_point_phase1::lst_proof_rule {
         owner: address,
     ): u64 {
         let mut owner_value = 0;
-        locker
-            .assets_of(&config::witness(), owner)
-            .do_ref!(
-                |proof| owner_value = owner_value + fountain::get_raw_debt<T>(protocol, proof.strap_address())
-            );
+        if (locker.has_assets(owner)) {
+            locker
+                .assets_of(&config::witness(), owner)
+                .do_ref!(
+                    |proof| owner_value = owner_value + fountain::get_raw_debt<T>(protocol, proof.strap_address())
+                );
+        };
         owner_value
     }
 

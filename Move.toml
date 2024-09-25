@@ -8,7 +8,8 @@ version = "0.1.0"
 # published-at = "0xadad56b1af73a29dbfed997ea13e4a6044eae29fd029fbd524fd121a13adca42"
 # published-at = "0x562cb692158e1d2ab82cb901be324dc6234f197bab6bfc1ba38114ae0aebc189"
 # published-at = "0x704a2b39ba4f6e9072a414afda6669bbbbfc09e9c2e23fdafb9c16973e229cb0"
-published-at = "0x634743f750d397ecc7d67f74ef0f0d88bd9c97591fa220f80e9ff7fee50f4f9c"
+# published-at = "0x634743f750d397ecc7d67f74ef0f0d88bd9c97591fa220f80e9ff7fee50f4f9c"
+published-at = "0x94ccb36285f06beca61f3edb24b2e452debacab7f646fff335706f52442f2004"
 
 [dependencies]
 LiquidlinkLocker = { git = "../liquidlink-contract-periphery", subdir = "locker", rev = "main" }

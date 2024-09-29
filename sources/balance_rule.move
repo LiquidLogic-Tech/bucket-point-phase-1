@@ -46,15 +46,17 @@ module bucket_point_phase1::balance_rule {
         ctx: &mut TxContext,
     ) {
         config.assert_valid_config_version();
+        let owner = ctx.sender();
         let (weight, action) = config.get_locker_params(locker);
-        let point = float::from(collateral.value()).mul(weight).floor() as u256;
+        let owner_balance = balance_locker::owner_locked_balance(locker, owner);
+        let factor = float::from(owner_balance + collateral.value()).mul(weight).floor() as u256;
         balance_locker::lock<T, BucketPointPhase1>(
             locker,
             &mut config::witness(),
             ctx.sender(),
             collateral,
             action,
-            point,   
+            factor,   
             config::duration(),
             clock,
             ctx
@@ -74,14 +76,14 @@ module bucket_point_phase1::balance_rule {
         if (withdrawal_amt > owner_balance) err_insufficient_to_withdraw();
         let new_balance = owner_balance - withdrawal_amt;
         let (weight, action) = config.get_locker_params(locker);
-        let point = float::from(new_balance).mul(weight).floor() as u256;
+        let factor = float::from(new_balance).mul(weight).floor() as u256;
         balance_locker::unlock<T, BucketPointPhase1>(
             locker,
             &mut config::witness(),
             sender,
             withdrawal_amt,
             action,
-            point,   
+            factor,   
             config::duration(),
             clock,
             ctx

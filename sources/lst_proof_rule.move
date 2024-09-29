@@ -49,7 +49,7 @@ module bucket_point_phase1::lst_proof_rule {
         let owner = ctx.sender();
         let (weight, action) = config.get_locker_params(locker);
         let current_value = owner_value(locker, protocol, owner);
-        let debt = fountain::get_raw_debt<T>(protocol, proof.strap_address());
+        let debt = get_raw_debt<T>(protocol, &proof);
         let factor = float::from(current_value + debt).mul(weight).floor() as u256;
         locker.lock(
             &mut config::witness(),
@@ -141,13 +141,24 @@ module bucket_point_phase1::lst_proof_rule {
             locker
                 .assets_of(&config::witness(), owner)
                 .do_ref!(
-                    |proof| owner_value = owner_value + fountain::get_raw_debt<T>(protocol, proof.strap_address())
+                    |proof| owner_value = owner_value + get_raw_debt<T>(protocol, proof)
                 );
         };
         owner_value
     }
 
     // Internal Funs
+
+    fun get_raw_debt<T>(
+        protocol: &BucketProtocol,
+        proof: &StakeProof<T, SUI>,
+    ): u64 {
+        if (fountain::bottle_exists<T>(protocol, proof.strap_address())) {
+            fountain::get_raw_debt<T>(protocol, proof.strap_address())
+        } else {
+            0
+        }
+    }
 
     fun borrow_asset<T>(
         witness: &BPP1,

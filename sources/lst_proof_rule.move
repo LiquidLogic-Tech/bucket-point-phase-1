@@ -99,20 +99,21 @@ module bucket_point_phase1::lst_proof_rule {
     ) {
         config.assert_valid_config_version();
         let w = &config::witness();
-        let mut is_not_empty = !locker.assets_of(w, owner).is_empty();
-        while (is_not_empty) {
-            let proof = &locker.assets_of(w, owner)[0];
+        let mut idx = 0;
+        let length = locker.assets_of(w, owner).length();
+        while (idx < length) {
+            let proof = &locker.assets_of(w, owner)[idx];
             let strap_address = proof.strap_address();
             let (is_liquidated, _, debt_amount) = fountain.liquidate_with_info<T, SUI>(
                 protocol, clock, strap_address, ctx,
             );
             if (is_liquidated) {
                 let proof = unlock_internal(
-                    config, locker, protocol, clock, 0, owner, debt_amount, ctx,
+                    config, locker, protocol, clock, idx, owner, debt_amount, ctx,
                 );
                 transfer::public_transfer(proof, owner);
             };
-            is_not_empty = !locker.assets_of(w, owner).is_empty();
+            idx = idx + 1;
         };
     }
 

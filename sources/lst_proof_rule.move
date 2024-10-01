@@ -98,11 +98,11 @@ module bucket_point_phase1::lst_proof_rule {
         ctx: &mut TxContext,
     ) {
         config.assert_valid_config_version();
-        let w = &config::witness();
+        let mut w = config::witness();
         let mut idx = 0;
-        let length = locker.assets_of(w, owner).length();
+        let length = locker.assets_of(&w, owner).length();
         while (idx < length) {
-            let proof = &locker.assets_of(w, owner)[idx];
+            let proof = &locker.assets_of(&w, owner)[0];
             let strap_address = proof.strap_address();
             let (is_liquidated, _, debt_amount) = fountain.liquidate_with_info<T, SUI>(
                 protocol, clock, strap_address, ctx,
@@ -112,8 +112,36 @@ module bucket_point_phase1::lst_proof_rule {
                     config, locker, protocol, clock, idx, owner, debt_amount, ctx,
                 );
                 transfer::public_transfer(proof, owner);
+            } else {
+                let last_index = locker.assets_of(&w, owner).length() - 1;
+                locker.assets_of_mut(&mut w, owner).swap(0, last_index);
             };
             idx = idx + 1;
+        };
+    }
+
+    public fun liquidate_by_index<T>(
+        config: &BucketPointConfig,
+        locker: &mut AssetLocker<StakeProof<T, SUI>, BPP1>,
+        protocol: &BucketProtocol,
+        fountain: &mut Fountain<T, SUI>,
+        clock: &Clock,
+        owner: address,
+        index: u64,
+        ctx: &mut TxContext,
+    ) {
+        config.assert_valid_config_version();
+        let w = &config::witness();
+        let proof = &locker.assets_of(w, owner)[index];
+        let strap_address = proof.strap_address();
+        let (is_liquidated, _, debt_amount) = fountain.liquidate_with_info<T, SUI>(
+            protocol, clock, strap_address, ctx,
+        );
+        if (is_liquidated) {
+            let proof = unlock_internal(
+                config, locker, protocol, clock, index, owner, debt_amount, ctx,
+            );
+            transfer::public_transfer(proof, owner);
         };
     }
 

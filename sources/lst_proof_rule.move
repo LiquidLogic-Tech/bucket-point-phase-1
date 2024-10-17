@@ -215,7 +215,12 @@ module bucket_point_phase1::lst_proof_rule {
         if (index >= proofs.length()) err_index_out_of_range();
         let (weight, action) = config.get_locker_params(locker);
         let current_value = owner_value(locker, protocol, owner);
-        let factor = float::from(current_value - debt_amount).mul(weight).floor() as u256;
+        let new_value = if (current_value > debt_amount) {
+            current_value - debt_amount
+        } else {
+            0
+        };
+        let factor = float::from(new_value).mul(weight).floor() as u256;
         locker.unlock(
             w,
             owner,

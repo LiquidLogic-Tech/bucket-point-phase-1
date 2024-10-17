@@ -2,7 +2,7 @@
 
 [move]
 version = 2
-manifest_digest = "70E1F99A9DB01826D514295ADB022E5624C7C475644FE106B9EFC673A1211117"
+manifest_digest = "961CB01044F326AC5FC590AFA4C1F8FDA01C42DA51E46B0C270D0A5DBF5A5199"
 deps_digest = "060AD7E57DFB13104F21BE5F5C3759D03F0553FC3229247D9A7A6B45F50D03A3"
 dependencies = [
   { name = "BucketFountain" },
@@ -129,7 +129,7 @@ dependencies = [
 ]
 
 [move.toolchain-version]
-compiler-version = "1.33.1"
+compiler-version = "1.34.1"
 edition = "2024.beta"
 flavor = "sui"
 
@@ -138,5 +138,5 @@ flavor = "sui"
 [env.mainnet]
 chain-id = "35834a8a"
 original-published-id = "0x6009b99da10a8ec5e5f108544c393191792a2970d5b710331803f31d53d4cb52"
-latest-published-id = "0x4676b9bc0cf5c3f29a4c39777c12f7f638758d5e752a5e27885cbab3a381345c"
-published-version = "10"
+latest-published-id = "0x9c7289341e07dbeb09bbf805ade663a529ea12d4826a63d467f6326b8fd0c13e"
+published-version = "12"

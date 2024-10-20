@@ -118,15 +118,16 @@ module bucket_point_phase1::lst_proof_rule {
                 config, locker, protocol, clock, index, owner, ctx,
             );
             transfer::public_transfer(proof, owner);
-        };
-        let (is_liquidated, _, _) = fountain.liquidate_with_info<T, SUI>(
-            protocol, clock, strap_address, ctx,
-        );
-        if (is_liquidated) {
-            let proof = unlock_internal(
-                config, locker, protocol, clock, index, owner, ctx,
+        } else {
+            let (is_liquidated, _, _) = fountain.liquidate_with_info<T, SUI>(
+                protocol, clock, strap_address, ctx,
             );
-            transfer::public_transfer(proof, owner);
+            if (is_liquidated) {
+                let proof = unlock_internal(
+                    config, locker, protocol, clock, index, owner, ctx,
+                );
+                transfer::public_transfer(proof, owner);
+            };
         };
     }
 

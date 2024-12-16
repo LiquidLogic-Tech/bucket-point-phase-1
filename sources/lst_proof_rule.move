@@ -146,6 +146,30 @@ module bucket_point_phase1::lst_proof_rule {
         fountain.claim(clock, &mut proofs[index], ctx)
     }
 
+    public fun settle<T>(
+        config: &BucketPointConfig,
+        locker: &mut AssetLocker<StakeProof<T, SUI>, BPP1>,
+        protocol: &BucketProtocol,
+        clock: &Clock,
+        owner: address,
+        ctx: &mut TxContext,
+    ) {
+        if (locker.has_assets(owner)) {
+            let value = owner_value(locker, protocol, owner);
+            let (weight, action) = config.get_locker_params(locker);
+            let factor = float::from(value).mul(weight).floor() as u256;
+            liquidlink_protocol::point::send_stake_point_req_with_owner(
+                &config::witness(),
+                owner,
+                action,
+                factor,
+                config::duration(),
+                clock,
+                ctx,
+            );
+        };
+    }
+
     public fun owner_value<T>(
         locker: &AssetLocker<StakeProof<T, SUI>, BPP1>,
         protocol: &BucketProtocol,

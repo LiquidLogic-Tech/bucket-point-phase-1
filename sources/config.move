@@ -7,6 +7,7 @@ module bucket_point_phase1::config {
     use sui::vec_set::{Self, VecSet};
     use flask::float::{Self, Float};
     use liquidlink_locker::asset_locker::{AssetLocker};
+    use bucket_point_phase1::config;
 
     // Constants
 
@@ -74,6 +75,22 @@ module bucket_point_phase1::config {
         config.weights.remove(&locker_id);
         config.weights.insert(
             locker_id, float::from_percent_u64(weight_percent),
+        );
+    }
+
+    public fun add_point(
+        _cap: &BucketPointCap,
+        owner: address,
+        action: String,
+        value: u256,
+        ctx: &mut TxContext,
+    ) {
+        liquidlink_protocol::point::send_add_point_req_with_owner(
+            &config::witness(),
+            owner,
+            action,
+            value,
+            ctx,
         );
     }
 

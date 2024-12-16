@@ -105,6 +105,29 @@ module bucket_point_phase1::proof_rule {
         coin::from_balance(reward, ctx)
     }
 
+    public fun settle<T>(
+        config: &BucketPointConfig,
+        locker: &mut AssetLocker<StakeProof<T, SUI>, BPP1>,
+        clock: &Clock,
+        owner: address,
+        ctx: &mut TxContext,
+    ) {
+        if (locker.has_assets(owner)) {
+            let value = total_value(locker, owner);
+            let (weight, action) = config.get_locker_params(locker);
+            let factor = float::from(value).mul(weight).floor() as u256;
+            liquidlink_protocol::point::send_stake_point_req_with_owner(
+                &config::witness(),
+                owner,
+                action,
+                factor,
+                config::duration(),
+                clock,
+                ctx,
+            );
+        };
+    }
+
     public fun total_value<T>(
         locker: &mut AssetLocker<StakeProof<T, SUI>, BPP1>,
         owner: address,
